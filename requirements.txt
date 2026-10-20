@@ -1,3 +1,7 @@
 Flask
+<<<<<<< HEAD
 gunicorn
 Flask-Login
+=======
+gunicorn
+>>>>>>> f5d6475555286959d5dae3d5c55c50c0ba1cec21

@@ -15,6 +15,7 @@
       <a href="{{ url_for('category', cat_type='pc_game') }}" class="btn {{ 'btn-primary' if active_tab == 'pc_game' else 'btn-outline' }}">PC Games</a>
       <a href="{{ url_for('category', cat_type='apk_game') }}" class="btn {{ 'btn-primary' if active_tab == 'apk_game' else 'btn-outline' }}">APK Games</a>
       <a href="{{ url_for('category', cat_type='apk_app') }}" class="btn {{ 'btn-primary' if active_tab == 'apk_app' else 'btn-outline' }}">APK Apps</a>
+<<<<<<< HEAD
       
       <!-- Admin Buttons -->
       {% if current_user.is_authenticated %}
@@ -24,6 +25,10 @@
         <a href="{{ url_for('login') }}" class="btn btn-outline" style="border-color: #22c55e; color: #22c55e;">Admin Login</a>
       {% endif %}
       
+=======
+      <a href="{{ url_for('add_item') }}" class="btn btn-add">+ Add New</a>
+      <!-- Theme Toggle Button -->
+>>>>>>> f5d6475555286959d5dae3d5c55c50c0ba1cec21
       <button id="theme-toggle" class="btn btn-outline">Light Mode</button>
     </div>
   </nav>
@@ -134,6 +139,7 @@
             {% if item.link %}
               <a href="{{ item.link }}" target="_blank" class="btn btn-primary small">Download</a>
             {% endif %}
+<<<<<<< HEAD
             
             <!-- Sirf Admin hi delete kar sakta hai -->
             {% if current_user.is_authenticated %}
@@ -141,17 +147,26 @@
                onclick="return confirm('Kya aap waqai yeh delete karna chahte hain?')"
                class="btn btn-danger small">Delete</a>
             {% endif %}
+=======
+            <a href="{{ url_for('delete_item', item_id=item.id) }}"
+               onclick="return confirm('Kya aap waqai yeh delete karna chahte hain?')"
+               class="btn btn-danger small">Delete</a>
+>>>>>>> f5d6475555286959d5dae3d5c55c50c0ba1cec21
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
     {% else %}
+<<<<<<< HEAD
       <p class="empty">Is category mein abhi kuch nahi hai. 
         {% if current_user.is_authenticated %}
           <a href="{{ url_for('add_item') }}">Add New</a> par click karein.
         {% endif %}
       </p>
+=======
+      <p class="empty">Is category mein abhi kuch nahi hai. <a href="{{ url_for('add_item') }}">Add New</a> par click karein.</p>
+>>>>>>> f5d6475555286959d5dae3d5c55c50c0ba1cec21
     {% endif %}
   </section>
   {% endif %}
@@ -164,6 +179,10 @@
   <script>
     const themeBtn = document.getElementById('theme-toggle');
     
+<<<<<<< HEAD
+=======
+    // Check if theme is saved in browser
+>>>>>>> f5d6475555286959d5dae3d5c55c50c0ba1cec21
     if(localStorage.getItem('theme') === 'light') {
         document.body.classList.add('light-theme');
         themeBtn.innerText = "Dark Mode";
@@ -171,6 +190,10 @@
 
     themeBtn.addEventListener('click', () => {
         document.body.classList.toggle('light-theme');
+<<<<<<< HEAD
+=======
+        
+>>>>>>> f5d6475555286959d5dae3d5c55c50c0ba1cec21
         if(document.body.classList.contains('light-theme')) {
             themeBtn.innerText = "Dark Mode";
             localStorage.setItem('theme', 'light');

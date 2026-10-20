@@ -101,6 +101,10 @@ body {
 .empty { text-align: center; padding: 60px; color: #94a3b8; font-size: 18px; background: rgba(15, 23, 42, 0.6); border-radius: 12px; }
 .footer { text-align: center; padding: 40px 20px; color: #64748b; margin-top: 80px; border-top: 1px solid rgba(255,255,255,0.05); }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> f5d6475555286959d5dae3d5c55c50c0ba1cec21
 /* ===== LIGHT THEME STYLES ===== */
 body.light-theme {
   background-color: #f0f4f8;
@@ -109,6 +113,10 @@ body.light-theme {
     linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
   color: #1e293b;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> f5d6475555286959d5dae3d5c55c50c0ba1cec21
 body.light-theme .navbar { background: rgba(255, 255, 255, 0.9); border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
 body.light-theme .logo { color: #1e293b; }
 body.light-theme .game-card, body.light-theme .game-form, body.light-theme .empty {
