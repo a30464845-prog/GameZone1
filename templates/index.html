@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameZone - Games & Apps Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="{{ url_for('home') }}" style="text-decoration:none;"><div class="logo">Game<span>Zone</span></div></a>
+    <div class="nav-buttons">
+      <a href="{{ url_for('category', cat_type='pc_game') }}" class="btn {{ 'btn-primary' if active_tab == 'pc_game' else 'btn-outline' }}">PC Games</a>
+      <a href="{{ url_for('category', cat_type='apk_game') }}" class="btn {{ 'btn-primary' if active_tab == 'apk_game' else 'btn-outline' }}">APK Games</a>
+      <a href="{{ url_for('category', cat_type='apk_app') }}" class="btn {{ 'btn-primary' if active_tab == 'apk_app' else 'btn-outline' }}">APK Apps</a>
+      
+      <!-- Admin Buttons -->
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('add_item') }}" class="btn btn-add">+ Add New</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-outline" style="border-color: #22c55e; color: #22c55e;">Admin Login</a>
+      {% endif %}
+      
+      <button id="theme-toggle" class="btn btn-outline">Light Mode</button>
+    </div>
+  </nav>
+
+  <!-- Notifications -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Hero Section -->
+  {% if not show_form and active_tab == 'all' %}
+  <header class="hero">
+    <h1>Welcome to <span>GameZone</span></h1>
+    <p>PC Games, Android Games aur Premium Apps — sab ek jagah!</p>
+    <div class="hero-buttons">
+      <a href="{{ url_for('category', cat_type='pc_game') }}" class="btn btn-primary big">PC Games</a>
+      <a href="{{ url_for('category', cat_type='apk_game') }}" class="btn btn-primary big">APK Games</a>
+      <a href="{{ url_for('category', cat_type='apk_app') }}" class="btn btn-add big">APK Apps</a>
+    </div>
+  </header>
+  {% endif %}
+
+  <!-- Add Form -->
+  {% if show_form %}
+  <section class="form-section">
+    <h2>Add New Game / App</h2>
+    <form method="POST" action="{{ url_for('add_item') }}" enctype="multipart/form-data" class="game-form">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Select Category *</label>
+          <select name="type" required>
+            <option value="pc_game">PC Game</option>
+            <option value="apk_game">Android Game (APK)</option>
+            <option value="apk_app">Android App (APK)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Name *</label>
+          <input type="text" name="title" required placeholder="e.g. GTA V ya WhatsApp" />
+        </div>
+        <div class="form-group">
+          <label>Genre / Category</label>
+          <input type="text" name="genre" placeholder="e.g. Action / Social" />
+        </div>
+        <div class="form-group">
+          <label>Size</label>
+          <input type="text" name="size" placeholder="e.g. 60 GB ya 50 MB" />
+        </div>
+        <div class="form-group">
+          <label>Download Link</label>
+          <input type="url" name="link" placeholder="https://..." />
+        </div>
+        <div class="form-group full">
+          <label>Description</label>
+          <textarea name="description" rows="3" placeholder="Tafseel likhein..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Cover Image</label>
+          <input type="file" name="image" accept="image/*" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-add big">Save</button>
+      <a href="{{ url_for('home') }}" class="btn btn-outline big">Cancel</a>
+    </form>
+  </section>
+  {% endif %}
+
+  <!-- Items Display -->
+  {% if not show_form %}
+  <section class="games-section">
+    <h2>
+      {% if active_tab == 'pc_game' %} PC Games Library
+      {% elif active_tab == 'apk_game' %} APK Games Library
+      {% elif active_tab == 'apk_app' %} APK Apps Library
+      {% else %} All Items Library {% endif %}
+    </h2>
+    
+    {% if items %}
+    <div class="games-grid">
+      {% for item in items %}
+      <div class="game-card">
+        {% if item.image %}
+          <img src="{{ url_for('static', filename='images/' + item.image) }}" alt="{{ item.title }}" />
+        {% else %}
+          <div class="no-image">NO IMAGE</div>
+        {% endif %}
+        <div class="card-body">
+          <span class="type-badge type-{{ item.type }}">
+            {% if item.type == 'pc_game' %} PC GAME
+            {% elif item.type == 'apk_game' %} APK GAME
+            {% else %} APK APP {% endif %}
+          </span>
+          
+          <h3>{{ item.title }}</h3>
+          <p class="meta">
+            {% if item.genre %}<span class="tag">{{ item.genre }}</span>{% endif %}
+            {% if item.size %}<span class="tag">{{ item.size }}</span>{% endif %}
+          </p>
+          <p class="desc">{{ item.description or "No description available." }}</p>
+          
+          <div class="card-actions">
+            {% if item.link %}
+              <a href="{{ item.link }}" target="_blank" class="btn btn-primary small">Download</a>
+            {% endif %}
+            
+            <!-- Sirf Admin hi delete kar sakta hai -->
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('delete_item', item_id=item.id) }}"
+               onclick="return confirm('Kya aap waqai yeh delete karna chahte hain?')"
+               class="btn btn-danger small">Delete</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+      <p class="empty">Is category mein abhi kuch nahi hai. 
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('add_item') }}">Add New</a> par click karein.
+        {% endif %}
+      </p>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <footer class="footer">
+    <p>&copy; 2025 GameZone — Made with Flask</p>
+  </footer>
+
+  <!-- Theme Toggle Script -->
+  <script>
+    const themeBtn = document.getElementById('theme-toggle');
+    
+    if(localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-theme');
+        themeBtn.innerText = "Dark Mode";
+    }
+
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        if(document.body.classList.contains('light-theme')) {
+            themeBtn.innerText = "Dark Mode";
+            localStorage.setItem('theme', 'light');
+        } else {
+            themeBtn.innerText = "Light Mode";
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+  </script>
+</body>
+</html>
